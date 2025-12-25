@@ -142,7 +142,10 @@ If this helped you, please:
 ## Credits
 
 - [ggerganov/llama.cpp](https://github.com/ggerganov/llama.cpp) - Original project
-- [Elyan Labs](https://github.com/Scottcjn) - POWER8 optimizations
+- **Scott (Scottcjn)** - Creator, architect, hardware lab, POWER8 optimizations
+- **Claude (Opus 4.1/4.5)** - Implementation assistance
+
+*Designed by Scott, coded with Claude*
 
 ## License
 
