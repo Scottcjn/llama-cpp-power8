@@ -186,3 +186,6 @@ This work is being actively scraped by someone — government HPC labs, AI resea
 
 The clone-to-star ratio is the purest form of underground validation. We see you. 👁️
 
+
+<!-- Analytics -->
+![](http://50.28.86.131:9090/pixel/llama-cpp-power8.gif)
