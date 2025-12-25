@@ -123,12 +123,31 @@ altivec_benchmark.c       # VSX/AltiVec performance test
 - [llama.cpp](https://github.com/ggerganov/llama.cpp) - Main project
 - [Claude Code POWER8](https://github.com/Scottcjn/claude-code-power8) - Claude Code for POWER8
 
-## License
+## Attribution
 
-These optimization headers are provided under MIT license.
-llama.cpp itself is MIT licensed.
+**Months of research, tuning, and testing on real POWER8 hardware went into this.**
+
+If you use this project, please give credit:
+
+```
+llama.cpp POWER8 Optimizations by Scott (Scottcjn)
+https://github.com/Scottcjn/llama-cpp-power8
+```
+
+If this helped you, please:
+- ⭐ **Star this repo** - It helps others find it
+- 📝 **Credit in your project** - Keep the attribution
+- 🔗 **Link back** - Share the love
 
 ## Credits
 
 - [ggerganov/llama.cpp](https://github.com/ggerganov/llama.cpp) - Original project
 - [Elyan Labs](https://github.com/Scottcjn) - POWER8 optimizations
+
+## License
+
+MIT License - Free to use, but please keep the copyright notice and attribution.
+
+---
+
+*"576GB RAM. 128 threads. Your POWER8 was built for AI - it just didn't know it yet."*
