@@ -118,6 +118,22 @@ altivec_benchmark.c       # VSX/AltiVec performance test
 - **RAM**: 576 GB DDR3
 - **OS**: Ubuntu 20.04 LTS
 
+## Video Demos
+
+[![DeepSeek on POWER8](https://img.youtube.com/vi/T_o39s7r0iE/0.jpg)](https://youtu.be/T_o39s7r0iE?si=UtJHjFOO4KxLk40Y)
+
+**DeepSeek Running on POWER8** - LLM inference on IBM POWER8 S824
+
+[![Claude Code on POWER8](https://img.youtube.com/vi/KEE6QV2dCEU/0.jpg)](https://youtu.be/KEE6QV2dCEU?si=RJ5L8CGA0HJa6P7F)
+
+**Claude Code on POWER8** - Proving Claude Code works on POWER8!
+
+## Community
+
+Join the RustChain Discord for PowerPC/POWER8 AI discussion:
+
+[![Discord](https://img.shields.io/badge/Discord-RustChain-7289DA?logo=discord&logoColor=white)](https://discord.gg/tQ4q3z4M)
+
 ## Related Projects
 
 - [llama.cpp](https://github.com/ggerganov/llama.cpp) - Main project
