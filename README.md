@@ -189,3 +189,20 @@ The clone-to-star ratio is the purest form of underground validation. We see you
 
 <!-- Analytics -->
 ![](http://50.28.86.131:9090/pixel/llama-cpp-power8.gif)
+
+
+## 中文简介 | Chinese Introduction
+
+llama.cpp Power8 优化版 - 在 IBM POWER8 服务器上运行 LLM！
+
+这是首个为 IBM POWER8 (ppc64le) 架构优化的 llama.cpp 版本，使用 AltiVec/VSX SIMD 指令集加速。
+
+**性能特点：**
+- POWER8 处理器上的本地 LLM 推理
+- AltiVec/VSX SIMD 加速
+- 支持大型语言模型（7B、13B、70B 参数）
+- 无需 GPU，纯 CPU 运行
+
+让企业级 POWER 服务器也能运行现代 AI！
+
+Contributed by eelaine-wzw
