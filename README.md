@@ -214,3 +214,13 @@ The clone-to-star ratio is the purest form of underground validation. We see you
 
 <!-- Analytics -->
 ![](http://50.28.86.131:9090/pixel/llama-cpp-power8.gif)
+
+---
+
+<div align="center">
+
+**[Elyan Labs](https://github.com/Scottcjn)** · 1,882 commits · 97 repos · 1,334 stars · $0 raised
+
+[⭐ Star Rustchain](https://github.com/Scottcjn/Rustchain) · [📊 Q1 2026 Traction Report](https://github.com/Scottcjn/Rustchain/blob/main/docs/DEVELOPER_TRACTION_Q1_2026.md) · [Follow @Scottcjn](https://github.com/Scottcjn)
+
+</div>
