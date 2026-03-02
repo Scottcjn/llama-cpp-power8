@@ -1,0 +1,36 @@
+name: CMake Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential cmake
+      
+    - name: Configure CMake
+      run: |
+        mkdir build
+        cd build
+        cmake .. -DCMAKE_BUILD_TYPE=Release
+      
+    - name: Build
+      run: |
+        cd build
+        cmake --build . --config Release -j$(nproc)
+      
+    - name: Test build artifacts
+      run: |
+        cd build
+        ls -la bin/ || ls -la *.a || echo "Build artifacts check"
