@@ -22,12 +22,29 @@ Thank you for your interest in contributing to llama-cpp-power8!
 ### Pull Requests
 
 1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+2. Create a branch, e.g. `git checkout -b docs/contributing`
 3. Make your changes
-4. Run tests if applicable
-5. Commit with clear messages (`git commit -m 'Add amazing feature'`)
-6. Push to your branch (`git push origin feature/amazing-feature`)
-7. Open a Pull Request
+4. If you touch build scripts or performance code, include before/after notes.
+5. Commit with clear messages
+6. Push your branch and open a PR
+
+## Build & Toolchain Notes
+
+This repo contains POWER8-specific headers and benchmarking code intended to be copied into a `llama.cpp` checkout.
+
+### Requirements
+- CMake 3.14+
+- GCC with POWER8 support
+- A POWER8 system (or cross toolchain) if you want to validate VSX/AltiVec changes
+
+### Quick sanity check
+- `altivec_benchmark.c` should compile with appropriate POWER8 flags (see README).
+
+## Testing
+
+There's no CI test suite here yet. Please include:
+- what you changed
+- how you validated it (compile command, bench output, etc.)
 
 ### Code Style
 
