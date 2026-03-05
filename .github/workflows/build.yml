@@ -1,0 +1,29 @@
+name: CMake Build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Install CMake
+      run: |
+        cmake --version
+    
+    - name: Configure
+      run: |
+        mkdir -p build
+        cd build
+        cmake ..
+    
+    - name: Build
+      run: |
+        cd build
+        make -j$(nproc)
