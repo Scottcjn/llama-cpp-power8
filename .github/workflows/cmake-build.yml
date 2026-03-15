@@ -1,0 +1,43 @@
+name: CMake Build (PowerPC Cross-Compile)
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install PowerPC cross-compiler
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc-powerpc64le-linux-gnu g++-powerpc64le-linux-gnu
+
+      - name: Configure CMake (cross-compile for POWER8)
+        run: |
+          cmake -B build \
+            -DCMAKE_SYSTEM_NAME=Linux \
+            -DCMAKE_SYSTEM_PROCESSOR=ppc64le \
+            -DCMAKE_C_COMPILER=powerpc64le-linux-gnu-gcc \
+            -DCMAKE_CXX_COMPILER=powerpc64le-linux-gnu-g++ \
+            -DCMAKE_C_FLAGS="-mcpu=power8 -mvsx -maltivec -O2" \
+            -DCMAKE_CXX_FLAGS="-mcpu=power8 -mvsx -maltivec -O2" \
+            -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build
+        run: cmake --build build --verbose
+
+      - name: Verify build artifacts
+        run: |
+          echo "=== Build artifacts ==="
+          ls -lh build/altivec_bench
+          file build/altivec_bench
+          echo "=== PowerPC headers present ==="
+          ls -1 ggml/src/ggml-cpu/arch/powerpc/
+          ls -1 powerpc/
