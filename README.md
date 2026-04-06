@@ -1,5 +1,8 @@
 # llama.cpp for IBM POWER8
 
+> **Part of the [Proof of Physical AI](https://github.com/Scottcjn/Rustchain) stack** — sovereign inference on sovereign hardware. No API landlords.
+
+[![Proof of Physical AI](https://img.shields.io/badge/Proof_of_Physical_AI-POWER8-blue?style=flat-square)](https://github.com/Scottcjn/Rustchain)
 [![License](https://img.shields.io/github/license/Scottcjn/llama-cpp-power8)](LICENSE)
 [![Stars](https://img.shields.io/github/stars/Scottcjn/llama-cpp-power8)](https://github.com/Scottcjn/llama-cpp-power8/stargazers)
 [![Issues](https://img.shields.io/github/issues/Scottcjn/llama-cpp-power8)](https://github.com/Scottcjn/llama-cpp-power8/issues)
@@ -23,11 +26,10 @@
 | 13B | 16 GB | 12 GB |
 | 30B | 32 GB | 24 GB |
 | 65B | 64 GB | 48 GB |
-
 [![BCOS Certified](https://img.shields.io/badge/BCOS-Certified-brightgreen?style=flat&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0id2hpdGUiPjxwYXRoIGQ9Ik0xMiAxTDMgNXY2YzAgNS41NSAzLjg0IDEwLjc0IDkgMTIgNS4xNi0xLjI2IDktNi40NSA5LTEyVjVsLTktNHptLTIgMTZsLTQtNCA1LjQxLTUuNDEgMS40MSAxLjQxTDEwIDE0bDYtNiAxLjQxIDEuNDFMMTAgMTd6Ii8+PC9zdmc+)](BCOS.md)
 **AltiVec/VSX Optimized LLM Inference for POWER8**
 
-This provides POWER8-specific optimizations for [llama.cpp](https://github.com/ggerganov/llama.cpp), enabling efficient LLM inference on IBM POWER8 servers.
+Run your own models on your own hardware. This provides POWER8-specific optimizations for [llama.cpp](https://github.com/ggerganov/llama.cpp), enabling efficient LLM inference on IBM POWER8 servers using vec_perm non-bijunctive collapse and PSE hardware entropy — techniques impossible on x86/ARM/CUDA.
 
 ## What's Included
 
@@ -159,10 +161,25 @@ Join the RustChain Discord for PowerPC/POWER8 AI discussion:
 
 [![Discord](https://img.shields.io/badge/Discord-RustChain-7289DA?logo=discord&logoColor=white)](https://discord.gg/tQ4q3z4M)
 
+## The Proof of Physical AI Stack
+
+This repo is one piece of a vertically integrated system where **the hardware that runs inference also earns tokens**:
+
+| Layer | Project | What It Does |
+|-------|---------|-------------|
+| **Inference** | **llama-cpp-power8** (this repo) | vec_perm collapse, PSE entropy, DCBT prefetch |
+| **Memory** | [RAM Coffers](https://github.com/Scottcjn/ram-coffers) | NUMA-distributed weight banking, 147 t/s on POWER8 |
+| **Consensus** | [RustChain](https://github.com/Scottcjn/Rustchain) | Proof of Antiquity — 1 CPU = 1 Vote, vintage hardware earns more |
+| **DePIN** | [RustChain Network](https://rustchain.org) | 4 attestation nodes, hardware fingerprinting, RTC token rewards |
+
+The same POWER8 S824 that benchmarks 8.8x stock llama.cpp also mines RTC via Proof of Antiquity at a 1.5x POWER8 multiplier. Sovereign inference, sovereign earnings.
+
 ## Related Projects
 
 - [llama.cpp](https://github.com/ggerganov/llama.cpp) - Main project
+- [RAM Coffers](https://github.com/Scottcjn/ram-coffers) - NUMA-aware weight banking (companion project)
 - [Claude Code POWER8](https://github.com/Scottcjn/claude-code-power8) - Claude Code for POWER8
+- [RustChain](https://github.com/Scottcjn/Rustchain) - Proof of Antiquity blockchain
 
 ## Attribution
 
