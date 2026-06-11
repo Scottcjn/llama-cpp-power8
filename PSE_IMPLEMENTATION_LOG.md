@@ -224,3 +224,49 @@ The symbolic layer (PowerLISP) should decide:
 
 This decision should happen at model load time, not per-op call.
 
+
+### 2026-06-11 ~00:15 CDT - PSE Port to Gemma 4-era llama.cpp + First MoE Results
+
+**Context**: Gemma 4 26B-A4B (MoE, 4B active params) deployed on S824. The PSE tree
+(based on 2026-03-27 master) predates Gemma 4 arch support, so the PSE patch set was
+ported onto current master `ac4cdde` (2026-06-10).
+
+**Port surface** (clean by design — PSE was always additive):
+- 20+ pure-addition headers + `pse-runtime.c/h` → copied verbatim, zero conflicts
+- 3-file diff (76 lines): `arch/powerpc/quants.c` + `ggml-cpu/CMakeLists.txt` applied
+  clean via `git apply`; `ggml-cpu.c` had drifted upstream → 8-line hook (include +
+  `pse_runtime_init()` in `ggml_cpu_init`) re-placed by hand
+- Branch `pse-port`, isolated clone — vanilla build kept as A/B baseline
+
+**Gemma 4 26B-A4B Q4_K_M results** (64 threads, S824, head-to-head same prompt):
+
+| Build | tg (tokens/s) | pp (tokens/s) |
+|-------|--------------|---------------|
+| master, unbound threads | 0.6 | — |
+| master + OMP spread/cores binding | 3.6 | 5.4 |
+| **master + PSE port** | **6.4 (1.7x)** | **16.6 (3.1x)** |
+
+**10.7x total** from stock-unbound to PSE-bound. The 3.1x prompt-processing gain is
+the headline for MoE: context ingestion is the dominant cost for agent workloads, and
+dcbt-resident prefetch + vec_msum paths attack exactly that.
+
+**Why this matters**: PSE was written for dense models (TinyLlama/DeepSeek era).
+It transferred to a mixture-of-experts architecture it had never seen, on a llama.cpp
+tree 2.5 months newer, with one 8-line manual fix. Substrate work outlives model
+generations.
+
+**Operational notes**:
+- `numactl` broken on this deployment (libnuma symbol-version mismatch) — OMP
+  `PROC_BIND=spread PLACES=cores` alone delivered the 6x binding win
+- Gemma 4 thinks by default; `--reasoning-budget 0` required for serving, else
+  reasoning starves `max_tokens` and content returns empty
+
+**Next — PSE-2 "Expert Coffers" (priority note, Elyan Labs 2026-06-11)**: MoE routers
+emit expert selections *before* expert FFNs execute. That is a prefetch window: dcbt
+expert weight banks speculatively per router logits, pin experts across NUMA nodes by
+Hebbian co-activation ("experts that fire together get banked together"), and track
+per-persona expert-activation fingerprints as a measurable identity-coherence signal.
+Extends the NUMA weight-banking priority claim of
+[ram-coffers](https://github.com/Scottcjn/ram-coffers) (2025-12-16, pre-dating
+DeepSeek Engram) from domain granularity to expert granularity. Spec to follow after
+baseline characterization — measure first, then build.
