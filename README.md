@@ -46,6 +46,13 @@ Tested on IBM Power System S824 (dual 8-core POWER8, 576GB RAM):
 | TinyLlama 1.1B Q4 | ~85 | ~15 |
 | Llama-7B Q4 | ~20 | ~5 |
 | DeepSeek-33B Q4 | ~5 | ~1 |
+| **Gemma 4 26B-A4B MoE Q4 (2026-06)** | **~16.6** | **~6.4** |
+
+> **2026-06 update:** the PSE patch set ported cleanly onto Gemma 4-era llama.cpp
+> (master `ac4cdde`) and delivered **1.7x generation / 3.1x prompt processing** on the
+> Gemma 4 26B-A4B mixture-of-experts vs the same master without PSE (10.7x vs
+> stock-unbound). Details + the PSE-2 "Expert Coffers" direction in
+> [PSE_IMPLEMENTATION_LOG.md](PSE_IMPLEMENTATION_LOG.md).
 
 ## Building llama.cpp for POWER8
 
