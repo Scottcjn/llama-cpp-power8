@@ -97,9 +97,34 @@ cmake .. \
     -DCMAKE_EXE_LINKER_FLAGS="-L/opt/ibm/mass/lib -lmassvp8 -lmass"
 ```
 
-### Fallback Behavior (Without VSX Acceleration)
 
-When building or running on targets where POWER8 VSX vector extensions are unavailable (or when compiling with generic PowerPC flags without `-mvsx -maltivec`), llama.cpp automatically falls back to scalar floating-point and integer routines. This ensures functional compatibility across all generic PowerPC environments while maintaining optimal vectorized paths when VSX hardware acceleration is present.
+## POWER8/POWER9 Compatibility & Fallback Matrix
+
+`llama-cpp-power8` leverages IBM PowerPC VSX and AltiVec vector acceleration for high-throughput inference:
+
+### Compile-Time & Runtime Feature Detection
+
+1. **Compile-Time Flags (`-mcpu=power8 -mvsx -maltivec`)**:
+   - Vector intrinsics are guarded by `#if defined(__POWER8_VECTOR__)` and `#if defined(__powerpc64__) || defined(__powerpc__)`.
+   - Compiling with `-mcpu=power8 -mvsx -maltivec` enables `__POWER8_VECTOR__`, `__VSX__`, and `__ALTIVEC__`.
+
+2. **POWER9 Compatibility Mode**:
+   - `power8-compat.h` provides vector load/store macros (`vec_xl`, `vec_xst`, `vec_xl_len`) for POWER8 targets while preventing conflicting GCC POWER9 builtins (`#if defined(__POWER8_VECTOR__) && !defined(__POWER9_VECTOR__)`).
+   - If running on POWER9 in POWER8 compatibility mode, build with `-mcpu=power8`. Do not define `__POWER9_VECTOR__`.
+
+3. **Scalar Fallback on Non-POWER / Disabled AltiVec**:
+   - When building or running on targets where POWER8 VSX vector extensions are unavailable (or when compiling with generic PowerPC flags without `-mvsx -maltivec`, or when AltiVec is disabled in VM guest kernels via `noaltivec`), vector loops automatically fall back to standard scalar floating-point and integer C implementations.
+   - Note: The scalar path runs for **functional correctness validation only** and does not provide hardware vector acceleration (~4x slower).
+
+### Compatibility Matrix
+
+| Architecture / Environment | Compiler Flags | Acceleration Path | Fallback Behavior |
+|---|---|---|---|
+| **POWER8 Native (S824/S822)** | `-mcpu=power8 -mvsx -maltivec` | Native VSX & AltiVec (`vec_perm`, `vec_madd`) | Full Vector Acceleration |
+| **POWER9 (Compatibility)** | `-mcpu=power8 -mvsx -maltivec` | POWER8 VSX via `power8-compat.h` | Compatible Vector Acceleration |
+| **KVM Guest (AltiVec Disabled)** | `-mcpu=power8` (noaltivec) | Scalar C Loops | Functional Correctness Only (~4x slower) |
+| **x86_64 / aarch64** | Standard POSIX Flags | Scalar C Loops | Functional Correctness Only |
+
 
 ## Running Inference
 
