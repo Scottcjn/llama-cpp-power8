@@ -181,9 +181,9 @@ This repo is one piece of a vertically integrated system where **the hardware th
 | **Inference** | **llama-cpp-power8** (this repo) | vec_perm collapse, PSE entropy, DCBT prefetch |
 | **Memory** | [RAM Coffers](https://github.com/Scottcjn/ram-coffers) | NUMA-distributed weight banking, 147 t/s on POWER8 |
 | **Consensus** | [RustChain](https://github.com/Scottcjn/Rustchain) | Proof of Antiquity — 1 CPU = 1 Vote, vintage hardware earns more |
-| **DePIN** | [RustChain Network](https://rustchain.org) | 4 attestation nodes, hardware fingerprinting, RTC token rewards |
+| **DePIN** | [RustChain Network](https://rustchain.org) | 2 live attestation nodes (volunteer nodes come and go), hardware fingerprinting, RTC token rewards |
 
-The same POWER8 S824 that benchmarks 8.8x stock llama.cpp also mines RTC via Proof of Antiquity at a 1.5x POWER8 multiplier. Sovereign inference, sovereign earnings.
+The same POWER8 S824 that benchmarks 8.8x stock llama.cpp also mines RTC via Proof of Antiquity at a 1.5x POWER8 multiplier (`"power8": 1.5` in [`node/rip_200_round_robin_1cpu1vote.py`](https://github.com/Scottcjn/Rustchain/blob/main/node/rip_200_round_robin_1cpu1vote.py); base value before the ~15%/year antiquity decay). Sovereign inference, sovereign earnings.
 
 ## Related Projects
 
