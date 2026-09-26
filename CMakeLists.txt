@@ -38,3 +38,18 @@ target_include_directories(test_gpu_offload_integration PRIVATE
     ${POWERPC_INCLUDE_DIR}
 )
 add_test(NAME gpu_offload_integration COMMAND test_gpu_offload_integration)
+
+# power8-compat.h shims (need a VSX-capable target, e.g. the ppc64le cross build).
+if(HAS_ALTIVEC)
+    foreach(variant IN ITEMS ggml powerpc)
+        if(variant STREQUAL "ggml")
+            set(_compat_dir ${POWERPC_INCLUDE_DIR})
+        else()
+            set(_compat_dir ${POWERPC_COMPAT_DIR})
+        endif()
+        add_executable(test_power8_compat_${variant} tests/test_power8_compat.c)
+        target_include_directories(test_power8_compat_${variant} PRIVATE ${_compat_dir})
+        target_compile_options(test_power8_compat_${variant} PRIVATE -Wall -Werror)
+        add_test(NAME power8_compat_${variant} COMMAND test_power8_compat_${variant})
+    endforeach()
+endif()
