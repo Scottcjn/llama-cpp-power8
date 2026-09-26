@@ -53,3 +53,28 @@ if(HAS_ALTIVEC)
         add_test(NAME power8_compat_${variant} COMMAND test_power8_compat_${variant})
     endforeach()
 endif()
+
+# Header self-containment: every standalone header must compile as the first
+# include of a translation unit (catches missing <stdint.h>/<stddef.h> etc.).
+# ggml-pse-integration.h is excluded: it pulls in PSE headers that live only
+# in the full llama.cpp POWER8 tree, not in this repository.
+set(_standalone_headers
+    ggml-dcbt-resident.h
+    ggml-gpu-offload-integration.h
+    ggml-mass-integration.h
+    ggml-sparse-softmax.h
+    power8-compat.h
+    pse-entropy-burst.h
+)
+set(_selfcontained_srcs)
+foreach(dir_var IN ITEMS POWERPC_INCLUDE_DIR POWERPC_COMPAT_DIR)
+    foreach(hdr IN LISTS _standalone_headers)
+        string(MAKE_C_IDENTIFIER "${dir_var}_${hdr}" _id)
+        set(_tu ${CMAKE_BINARY_DIR}/selfcontained/${_id}.c)
+        file(WRITE ${_tu} "#include \"${${dir_var}}/${hdr}\"\nint ${_id}_ok;\n")
+        list(APPEND _selfcontained_srcs ${_tu})
+    endforeach()
+endforeach()
+add_library(header_selfcontained OBJECT ${_selfcontained_srcs})
+target_include_directories(header_selfcontained PRIVATE ${CMAKE_SOURCE_DIR}/tests/stubs)
+target_compile_options(header_selfcontained PRIVATE -Wall -Werror)

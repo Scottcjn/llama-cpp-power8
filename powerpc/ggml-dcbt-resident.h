@@ -13,6 +13,8 @@
 #ifndef GGML_DCBT_RESIDENT_H
 #define GGML_DCBT_RESIDENT_H
 
+#include <stddef.h>
+
 #ifdef __powerpc64__
 
 /*===========================================================================

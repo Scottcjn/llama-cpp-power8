@@ -10,6 +10,7 @@
 #define GGML_SPARSE_SOFTMAX_H
 
 #include <math.h>
+#include <stdint.h>
 #include <string.h>
 #include <stdio.h>
 
