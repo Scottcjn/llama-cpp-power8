@@ -28,6 +28,7 @@ in a single POWER8 cycle across 128 threads.
 | `ggml-pse-integration.h` | Master PSE integration — include this first | yes |
 | `ggml-dcbt-resident.h` | Full L2/L3 resident dcbt prefetch (the 147 t/s enabler) | yes |
 | `ggml-intelligent-collapse.h` | Hebbian Top-K vec_perm collapse | no |
+| `ggml-vcipher-collapse.h` | Hardware crypto collapse (ISA 2.07 vcipher) | no |
 | `ggml-topk-collapse-vsx.h` | 12-op vec_perm attention collapse | no |
 | `ggml-attn-collapse-vsx.h` | VSX burst attention collapse | no |
 | `ggml-ram-coffer.h` | NUMA weight banking v1 | no |
@@ -76,16 +77,16 @@ cmake .. \
     -DGGML_BLAS=ON \
     -DGGML_BLAS_VENDOR=OpenBLAS \
     -DCMAKE_C_FLAGS="-mcpu=power8 -mvsx -maltivec -O3 -mtune=power8 -funroll-loops \
-        -DGGML_USE_MASS=1 -DGGML_POWER8_COMPAT_ACTIVE=1 -I/opt/ibm/mass/include" \
+        -DGGML_USE_MASS=1 -DGGML_USE_IBM_MASS=1 -DGGML_POWER8_COMPAT_ACTIVE=1 -I/opt/ibm/mass/include" \
     -DCMAKE_CXX_FLAGS="-mcpu=power8 -mvsx -maltivec -O3 -mtune=power8 -funroll-loops \
-        -DGGML_USE_MASS=1 -DGGML_POWER8_COMPAT_ACTIVE=1 -I/opt/ibm/mass/include" \
+        -DGGML_USE_MASS=1 -DGGML_USE_IBM_MASS=1 -DGGML_POWER8_COMPAT_ACTIVE=1 -I/opt/ibm/mass/include" \
     -DCMAKE_EXE_LINKER_FLAGS="-L/opt/ibm/mass/lib -lmassvp8 -lmass"
 make -j32
 ```
 
-Note: `ggml-mass-integration.h` is gated on `GGML_USE_IBM_MASS`, not `GGML_USE_MASS`.
-Add `-DGGML_USE_IBM_MASS=1` if you want its `ggml_mass_*_f32()` wrappers; with only
-`-DGGML_USE_MASS=1` the header reports `GGML_MASS_AVAILABLE 0`.
+Note: `ggml-mass-integration.h` is gated on `GGML_USE_IBM_MASS`, not `GGML_USE_MASS`,
+which is why the flags above pass both. With only `-DGGML_USE_MASS=1` its
+`ggml_mass_*_f32()` wrappers are off and the header reports `GGML_MASS_AVAILABLE 0`.
 
 ## Runtime (NUMA-aware)
 

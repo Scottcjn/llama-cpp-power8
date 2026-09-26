@@ -31,13 +31,22 @@ target_include_directories(powerpc_headers INTERFACE
 # ---------------------------------------------------------------------------
 enable_testing()
 
-# GPU offload dispatch logic (portable: builds on any host).
-add_executable(test_gpu_offload_integration tests/test_gpu_offload_integration.c)
-target_include_directories(test_gpu_offload_integration PRIVATE
-    ${CMAKE_SOURCE_DIR}/tests/stubs
-    ${POWERPC_INCLUDE_DIR}
-)
-add_test(NAME gpu_offload_integration COMMAND test_gpu_offload_integration)
+# GPU offload dispatch logic (portable: builds on any host). Run against both
+# copies of ggml-gpu-offload-integration.h so the two cannot drift apart
+# untested.
+foreach(variant IN ITEMS ggml powerpc)
+    if(variant STREQUAL "ggml")
+        set(_offload_dir ${POWERPC_INCLUDE_DIR})
+    else()
+        set(_offload_dir ${POWERPC_COMPAT_DIR})
+    endif()
+    add_executable(test_gpu_offload_integration_${variant} tests/test_gpu_offload_integration.c)
+    target_include_directories(test_gpu_offload_integration_${variant} PRIVATE
+        ${CMAKE_SOURCE_DIR}/tests/stubs
+        ${_offload_dir}
+    )
+    add_test(NAME gpu_offload_integration_${variant} COMMAND test_gpu_offload_integration_${variant})
+endforeach()
 
 # power8-compat.h shims (need a VSX-capable target, e.g. the ppc64le cross build).
 if(HAS_ALTIVEC)
