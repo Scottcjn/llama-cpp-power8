@@ -23,26 +23,33 @@ in a single POWER8 cycle across 128 threads.
 
 ## Key Headers
 
-| Header | Purpose |
-|--------|---------|
-| `ggml-pse-integration.h` | Master PSE integration — include this first |
-| `ggml-dcbt-resident.h` | Full L2/L3 resident dcbt prefetch (the 147 t/s enabler) |
-| `ggml-intelligent-collapse.h` | Hebbian Top-K vec_perm collapse |
-| `ggml-topk-collapse-vsx.h` | 12-op vec_perm attention collapse |
-| `ggml-attn-collapse-vsx.h` | VSX burst attention collapse |
-| `ggml-ram-coffer.h` | NUMA weight banking v1 |
-| `ggml-ram-coffers.h` | NUMA-aware weight banking (4 nodes, 512GB) |
-| `ggml-coffer-mmap.h` | GGUF mmap sharding across NUMA nodes |
-| `ggml-neuromorphic-coffers.h` | Brain hemisphere → NUMA cognitive routing |
-| `ggml-symbolic-neural-bridge.h` | PowerLISP ↔ neural integration |
-| `ggml-pse-symbolic-gate.h` | PSE symbolic gating |
-| `ggml-sparse-softmax.h` | Sparse softmax for MoE attention |
-| `ggml-mass-integration.h` | IBM MASS library integration (vsexp, vstanh) |
-| `ggml-gpu-offload-vulkan.h` | GPU offload via Vulkan (Navi 12 / AMD) |
-| `ggml-gpu-offload-local.h` | Local GPU offload helpers |
-| `ggml-gpu-offload-integration.h` | GPU offload integration layer |
-| `power8-compat.h` | POWER9→POWER8 intrinsic compatibility shims |
-| `pse-entropy-burst.h` | mftb timebase hardware entropy injection |
+| Header | Purpose | In this repo |
+|--------|---------|--------------|
+| `ggml-pse-integration.h` | Master PSE integration — include this first | yes |
+| `ggml-dcbt-resident.h` | Full L2/L3 resident dcbt prefetch (the 147 t/s enabler) | yes |
+| `ggml-intelligent-collapse.h` | Hebbian Top-K vec_perm collapse | no |
+| `ggml-topk-collapse-vsx.h` | 12-op vec_perm attention collapse | no |
+| `ggml-attn-collapse-vsx.h` | VSX burst attention collapse | no |
+| `ggml-ram-coffer.h` | NUMA weight banking v1 | no |
+| `ggml-ram-coffers.h` | NUMA-aware weight banking (4 nodes, 512GB) | no |
+| `ggml-coffer-mmap.h` | GGUF mmap sharding across NUMA nodes | no |
+| `ggml-neuromorphic-coffers.h` | Brain hemisphere → NUMA cognitive routing | no |
+| `ggml-symbolic-neural-bridge.h` | PowerLISP ↔ neural integration | no |
+| `ggml-pse-symbolic-gate.h` | PSE symbolic gating | no |
+| `ggml-sparse-softmax.h` | Sparse softmax for MoE attention | yes |
+| `ggml-mass-integration.h` | IBM MASS library integration (vsexp, vstanh) | yes |
+| `ggml-gpu-offload-vulkan.h` | GPU offload via Vulkan (Navi 12 / AMD) | no |
+| `ggml-gpu-offload-local.h` | Local GPU offload helpers | no |
+| `ggml-gpu-offload-integration.h` | GPU offload integration layer | yes |
+| `power8-compat.h` | POWER9→POWER8 intrinsic compatibility shims | yes |
+| `pse-entropy-burst.h` | mftb timebase hardware entropy injection | yes |
+
+Headers marked "no" live only in the full llama.cpp POWER8 working tree and are
+not published here. `ggml-pse-integration.h` includes several of them, so it does
+not compile from this repository alone; the other "yes" headers are standalone
+(checked at build time by the `header_selfcontained` CMake target).
+`ggml-gpu-offload-integration.h` expects `ggml-gpu-offload-local.h` from the full
+tree; a declaration-only stub for tests is in `tests/stubs/`.
 
 ## Source Files
 
@@ -75,6 +82,10 @@ cmake .. \
     -DCMAKE_EXE_LINKER_FLAGS="-L/opt/ibm/mass/lib -lmassvp8 -lmass"
 make -j32
 ```
+
+Note: `ggml-mass-integration.h` is gated on `GGML_USE_IBM_MASS`, not `GGML_USE_MASS`.
+Add `-DGGML_USE_IBM_MASS=1` if you want its `ggml_mass_*_f32()` wrappers; with only
+`-DGGML_USE_MASS=1` the header reports `GGML_MASS_AVAILABLE 0`.
 
 ## Runtime (NUMA-aware)
 

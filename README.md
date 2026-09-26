@@ -97,6 +97,10 @@ cmake .. \
     -DCMAKE_EXE_LINKER_FLAGS="-L/opt/ibm/mass/lib -lmassvp8 -lmass"
 ```
 
+The `ggml-mass-integration.h` wrappers in this repo are gated on `GGML_USE_IBM_MASS`;
+`-DGGML_USE_MASS=1` alone leaves them disabled (`GGML_MASS_AVAILABLE 0`). Add
+`-DGGML_USE_IBM_MASS=1` to the flags above to enable them.
+
 ### Fallback Behavior (Without VSX Acceleration)
 
 When building or running on targets where POWER8 VSX vector extensions are unavailable (or when compiling with generic PowerPC flags without `-mvsx -maltivec`), llama.cpp automatically falls back to scalar floating-point and integer routines. This ensures functional compatibility across all generic PowerPC environments while maintaining optimal vectorized paths when VSX hardware acceleration is present.
