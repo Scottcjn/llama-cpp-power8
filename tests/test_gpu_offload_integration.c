@@ -1,7 +1,9 @@
+/* Include the header under test first: it must be self-contained. */
+#include "ggml-gpu-offload-integration.h"
+
+#include <limits.h>
 #include <stdbool.h>
 #include <stdint.h>
-
-#include "ggml-gpu-offload-integration.h"
 
 static int failures;
 static int stub_calls;
@@ -86,12 +88,56 @@ static void test_large_matmul_falls_back_on_gpu_failure(void)
     check(captured_k == 1024);
 }
 
+static void test_oversized_dims_are_not_truncated(void)
+{
+    float A[1] = {1.0f};
+    float B[1] = {2.0f};
+    float C[1] = {0.0f};
+
+    /* (int)((int64_t)INT_MAX + 1) wraps; the GPU must never see it. */
+    reset_stub(0);
+    check(!try_gpu_offload_matmul(A, B, C, (int64_t)INT_MAX + 1, 16, 32));
+    check(stub_calls == 0);
+
+    /* 2^32 + 1024 would truncate to a plausible-looking 1024. */
+    reset_stub(0);
+    check(!try_gpu_offload_matmul(A, B, C, 1024, ((int64_t)1 << 32) + 1024, 32));
+    check(stub_calls == 0);
+
+    reset_stub(0);
+    check(!try_gpu_offload_matmul(A, B, C, 1024, 16, (int64_t)INT_MAX + 7));
+    check(stub_calls == 0);
+
+    /* Largest representable dimension is still offloaded, unmodified. */
+    reset_stub(0);
+    check(try_gpu_offload_matmul(A, B, C, INT_MAX, 1, 1));
+    check(stub_calls == 1);
+    check(captured_m == INT_MAX);
+}
+
+static void test_nonpositive_dims_are_rejected(void)
+{
+    float A[1] = {1.0f};
+    float B[1] = {2.0f};
+    float C[1] = {0.0f};
+
+    reset_stub(0);
+    check(!try_gpu_offload_matmul(A, B, C, 1024, 0, 32));
+    check(stub_calls == 0);
+
+    reset_stub(0);
+    check(!try_gpu_offload_matmul(A, B, C, 1024, 16, -5));
+    check(stub_calls == 0);
+}
+
 int main(void)
 {
     test_should_try_gpu_offload_boundaries();
     test_small_matmul_never_calls_gpu();
     test_large_matmul_reports_gpu_success();
     test_large_matmul_falls_back_on_gpu_failure();
+    test_oversized_dims_are_not_truncated();
+    test_nonpositive_dims_are_rejected();
 
     return failures == 0 ? 0 : 1;
 }
