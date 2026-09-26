@@ -22,3 +22,19 @@ target_include_directories(powerpc_headers INTERFACE
     ${POWERPC_INCLUDE_DIR}
     ${POWERPC_COMPAT_DIR}
 )
+
+# ---------------------------------------------------------------------------
+# Tests (run with `ctest --output-on-failure` from the build directory).
+# When cross-compiling for ppc64le, pass
+#   -DCMAKE_CROSSCOMPILING_EMULATOR="qemu-ppc64le;-L;/usr/powerpc64le-linux-gnu"
+# so ctest can execute the target binaries under user-mode QEMU.
+# ---------------------------------------------------------------------------
+enable_testing()
+
+# GPU offload dispatch logic (portable: builds on any host).
+add_executable(test_gpu_offload_integration tests/test_gpu_offload_integration.c)
+target_include_directories(test_gpu_offload_integration PRIVATE
+    ${CMAKE_SOURCE_DIR}/tests/stubs
+    ${POWERPC_INCLUDE_DIR}
+)
+add_test(NAME gpu_offload_integration COMMAND test_gpu_offload_integration)
