@@ -7,7 +7,9 @@
 #define GGML_GPU_OFFLOAD_INTEGRATION_H
 
 #include "ggml-gpu-offload-local.h"
+#include <limits.h>
 #include <stdbool.h>
+#include <stdint.h>
 
 // Minimum dimensions for GPU offload (smaller = CPU is faster due to overhead)
 #define GPU_OFFLOAD_MIN_M 512
@@ -23,7 +25,16 @@ static inline bool try_gpu_offload_matmul(
     if (M < GPU_OFFLOAD_MIN_M && N < GPU_OFFLOAD_MIN_N && K < GPU_OFFLOAD_MIN_K) {
         return false;
     }
-    
+
+    // The GPU backend takes int dimensions. Anything that does not fit
+    // (or is non-positive) would be silently truncated by the cast below and
+    // the GPU would compute a differently-shaped product while we report
+    // success. Leave such shapes to the CPU path instead.
+    if (M <= 0 || N <= 0 || K <= 0 ||
+        M > INT_MAX || N > INT_MAX || K > INT_MAX) {
+        return false;
+    }
+
     // Try GPU offload
     if (gpu_local_matmul_f32(A, B, C, (int)M, (int)N, (int)K) == 0) {
         return true;  // GPU handled it

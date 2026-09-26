@@ -92,10 +92,14 @@ IBM Mathematical Acceleration Subsystem (MASS) provides optimized math functions
 cmake .. \
     -DCMAKE_BUILD_TYPE=Release \
     -DGGML_OPENMP=ON \
-    -DCMAKE_C_FLAGS="-mcpu=power8 -mvsx -maltivec -O3 -mtune=power8 -funroll-loops -DGGML_USE_MASS=1 -I/opt/ibm/mass/include" \
-    -DCMAKE_CXX_FLAGS="-mcpu=power8 -mvsx -maltivec -O3 -mtune=power8 -funroll-loops -DGGML_USE_MASS=1 -I/opt/ibm/mass/include" \
+    -DCMAKE_C_FLAGS="-mcpu=power8 -mvsx -maltivec -O3 -mtune=power8 -funroll-loops -DGGML_USE_MASS=1 -DGGML_USE_IBM_MASS=1 -I/opt/ibm/mass/include" \
+    -DCMAKE_CXX_FLAGS="-mcpu=power8 -mvsx -maltivec -O3 -mtune=power8 -funroll-loops -DGGML_USE_MASS=1 -DGGML_USE_IBM_MASS=1 -I/opt/ibm/mass/include" \
     -DCMAKE_EXE_LINKER_FLAGS="-L/opt/ibm/mass/lib -lmassvp8 -lmass"
 ```
+
+The `ggml-mass-integration.h` wrappers in this repo are gated on `GGML_USE_IBM_MASS`,
+which is why the flags above pass `-DGGML_USE_IBM_MASS=1`. `-DGGML_USE_MASS=1` alone
+leaves them disabled (`GGML_MASS_AVAILABLE 0`).
 
 ### Fallback Behavior (Without VSX Acceleration)
 
@@ -137,7 +141,10 @@ The `ggml-dcbt-resident.h` header provides cache-resident prefetch hints:
 ### Memory Alignment
 
 POWER8 prefers 128-byte aligned data for optimal VSX performance.
-The `power8-compat.h` handles alignment requirements.
+`power8-compat.h` does not align data for you. It leaves `vec_xl`/`vec_xst` as
+the compiler's native unaligned VSX loads/stores (correct at any address), so
+128-byte alignment is a performance choice for the caller, not a correctness
+requirement.
 
 ## Files
 

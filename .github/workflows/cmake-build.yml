@@ -17,7 +17,7 @@ jobs:
       - name: Install PowerPC cross-compiler
         run: |
           sudo apt-get update
-          sudo apt-get install -y gcc-powerpc64le-linux-gnu g++-powerpc64le-linux-gnu
+          sudo apt-get install -y gcc-powerpc64le-linux-gnu g++-powerpc64le-linux-gnu qemu-user
 
       - name: Configure CMake (cross-compile for POWER8)
         run: |
@@ -28,10 +28,14 @@ jobs:
             -DCMAKE_CXX_COMPILER=powerpc64le-linux-gnu-g++ \
             -DCMAKE_C_FLAGS="-mcpu=power8 -mvsx -maltivec -O2" \
             -DCMAKE_CXX_FLAGS="-mcpu=power8 -mvsx -maltivec -O2" \
-            -DCMAKE_BUILD_TYPE=Release
+            -DCMAKE_BUILD_TYPE=Release \
+            "-DCMAKE_CROSSCOMPILING_EMULATOR=qemu-ppc64le;-L;/usr/powerpc64le-linux-gnu"
 
       - name: Build
         run: cmake --build build --verbose
+
+      - name: Test (under qemu-ppc64le)
+        run: ctest --test-dir build --output-on-failure --no-tests=error
 
       - name: Verify build artifacts
         run: |
