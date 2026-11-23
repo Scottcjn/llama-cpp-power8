@@ -1,0 +1,24 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it using the metadata below."
+title: "llama.cpp for IBM POWER8"
+abstract: "POWER8-specific optimizations for llama.cpp: vec_perm non-bijunctive collapse, PSE hardware entropy, DCBT prefetch."
+type: software
+authors:
+  - family-names: Boudreaux
+    given-names: Scott
+    affiliation: "Elyan Labs"
+repository-code: "https://github.com/Scottcjn/llama-cpp-power8"
+url: "https://github.com/Scottcjn/llama-cpp-power8"
+license: Apache-2.0
+version: 1.0.0
+date-released: 2026-01-01
+preferred-citation:
+  type: generic
+  authors:
+    - family-names: Boudreaux
+      given-names: Scott
+      affiliation: "Elyan Labs"
+  title: "Non-Bijunctive Permutation Collapse: AltiVec vec_perm Enables Single-Cycle Attention Path Selection for LLM Inference"
+  doi: "10.5281/zenodo.21282030"
+  year: 2026
+  month: 7
